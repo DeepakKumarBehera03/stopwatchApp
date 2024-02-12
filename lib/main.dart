@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stopwatch/stopwatch.dart';
 
 void main(){
-  runApp(StopWatchApp());
+  runApp(const StopWatchApp());
 }
 
 class StopWatchApp extends StatelessWidget {

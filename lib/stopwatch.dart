@@ -9,21 +9,36 @@ class StopWatch extends StatefulWidget {
 }
 
 class _StopWatchState extends State<StopWatch> {
-  late int seconds;
+  int seconds = 0;
   Timer? timer;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    seconds = 0;
-    timer = Timer.periodic(Duration(seconds: 1), onTick);
+  bool isTicking = true;
+  void _startTimer(){
+    timer = Timer.periodic(const Duration(seconds: 1), _onTick);
+    setState(() {
+      seconds = 0;
+      isTicking = true;
+    });
   }
-  void onTick(Timer timer){
+  void stopTimer(){
+    timer!.cancel();
+    setState(() {
+      isTicking = false;
+    });
+  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // TODO: implement initState
+  //   seconds = 0;
+  //   timer = Timer.periodic(Duration(seconds: 1), _onTick);
+  // }
+  void _onTick(Timer time){
     setState(() {
       ++seconds;
     });
   }
-  String _secondText() => (seconds == 1 ? "second" : "seconds");
+
+  String time() => (seconds == 1? "Second":"Seconds");
   @override
   void dispose() {
     // TODO: implement dispose
@@ -34,35 +49,43 @@ class _StopWatchState extends State<StopWatch> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Stop Watch"),
+        title: const Text("Stopwatch"),
       ),
-      body: Center(
-        child: Container(
-          margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-          height: 50,
-          width: 450,
-          decoration:  BoxDecoration(
-
-            gradient: const LinearGradient(
-              colors: [
-                Colors.grey,
-                Colors.white54,
-                Colors.grey
-              ],
-            ),
-            borderRadius: BorderRadius.circular(30),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                "$seconds ${_secondText()}",
-                style: Theme.of(context).textTheme.headlineMedium,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "$seconds ${time()}",
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 20
+                ),
               ),
-            ),
+              const SizedBox(height: 30,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.green),
+                      foregroundColor: MaterialStateProperty.all(Colors.white),
+                    ),
+                    onPressed: isTicking ? _startTimer :null,
+                    child: const Text("Start"),
+                  ),
+                  const SizedBox(width: 25,),
+                  TextButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.red),
+                      foregroundColor: MaterialStateProperty.all(Colors.white),
+                    ),
+                    onPressed: isTicking == true ? stopTimer : null,
+                    child: const Text("Stop"),
+                  )
+                ],
+              )
+            ],
           ),
-        ),
-      ),
     );
   }
 }
