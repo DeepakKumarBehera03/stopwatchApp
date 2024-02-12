@@ -15,7 +15,6 @@ class _StopWatchState extends State<StopWatch> {
   void _startTimer(){
     timer = Timer.periodic(const Duration(seconds: 1), _onTick);
     setState(() {
-      seconds = 0;
       isTicking = true;
     });
   }
@@ -70,7 +69,7 @@ class _StopWatchState extends State<StopWatch> {
                       backgroundColor: MaterialStateProperty.all(Colors.green),
                       foregroundColor: MaterialStateProperty.all(Colors.white),
                     ),
-                    onPressed: isTicking ? _startTimer :null,
+                    onPressed: _startTimer,
                     child: const Text("Start"),
                   ),
                   const SizedBox(width: 25,),
