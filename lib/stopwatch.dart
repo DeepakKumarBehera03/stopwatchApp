@@ -19,7 +19,14 @@ class _StopWatchState extends State<StopWatch> {
       laps.add(milliseconds);
       milliseconds = 0;
     });
+    scrollController.animateTo(
+      itemHeight * laps.length,
+      duration: const Duration(milliseconds: 1000),
+      curve: Curves.easeIn,
+    );
   }
+  final itemHeight = 60.0;
+  final scrollController = ScrollController();
   void _clearLaps(){
     setState(() {
       laps.clear();
@@ -54,11 +61,20 @@ class _StopWatchState extends State<StopWatch> {
     return "$seconds seconds";
   }
   Widget _buildLapDisplay(){
-    return ListView(
-      children: [
-        for (int milliseconds in laps)
-          ListTile(title:Text(secondSecond(milliseconds),),),
-      ],
+    return Scrollbar(
+      child: ListView.builder(
+        controller: scrollController,
+        itemExtent: itemHeight,
+        itemCount: laps.length,
+        itemBuilder: (context, index){
+          final milliseconds = laps[index];
+          return ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 50),
+            title: Text("Lap ${index + 1}"),
+            trailing: Text(secondSecond(milliseconds),),
+          );
+        },
+      ),
     );
   }
   @override
