@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 class StopWatch extends StatefulWidget {
-  const StopWatch({super.key,required this.name,required this.email});
-  final String name;
-  final String email;
+  const StopWatch({super.key,this.name, this.email});
+  final String? name;
+  final String? email;
+  static const route = "/stopwatch";
 
   @override
   State<StopWatch> createState() => _StopWatchState();
@@ -79,12 +80,14 @@ class _StopWatchState extends State<StopWatch> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    String name = ModalRoute.of(context)!.settings.arguments.toString();
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.name),
+        title: Text(name),
       ),
       body:Column(
         children: [

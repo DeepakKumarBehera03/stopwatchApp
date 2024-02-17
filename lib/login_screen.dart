@@ -3,7 +3,7 @@ import 'package:stopwatch/stopwatch.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-
+  static const route = "/login";
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -24,9 +24,10 @@ class _LoginScreenState extends State<LoginScreen> {
     //   name = _nameController.text;
     // });
     final name = _nameController.text;
-    final email = _emailController.text;
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context)=> StopWatch(name: name, email: email),),
+    // final email = _emailController.text;
+    Navigator.of(context).pushReplacementNamed(
+      StopWatch.route,
+      arguments: name,
     );
   }
   @override
