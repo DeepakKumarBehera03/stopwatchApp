@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:stopwatch/platform_alert.dart';
 class StopWatch extends StatefulWidget {
   const StopWatch({super.key,this.name, this.email});
   final String? name;
@@ -46,7 +47,13 @@ class _StopWatchState extends State<StopWatch> {
       timer!.cancel();
       isTick = false;
     });
+    final totalRuntime = laps.fold(milliseconds, (total , lap) => total + lap);
+    final alert = PlatFormAlert(
+        title: "Run Completed!",
+        message: "Total Runtime is ${secondSecond(totalRuntime)}.");
+    alert.show(context);
   }
+
   void _onTick(Timer timer){
     setState(() {
       milliseconds+=100;
