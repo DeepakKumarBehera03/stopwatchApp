@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:stopwatch/platform_alert.dart';
@@ -42,16 +43,34 @@ class _StopWatchState extends State<StopWatch> {
       isTick = true;
     });
   }
-  void stopTimer(){
+  void stopTimer(BuildContext context){
     setState(() {
       timer!.cancel();
       isTick = false;
     });
-    final totalRuntime = laps.fold(milliseconds, (total , lap) => total + lap);
-    final alert = PlatFormAlert(
-        title: "Run Completed!",
-        message: "Total Runtime is ${secondSecond(totalRuntime)}.");
-    alert.show(context);
+    final controller = showBottomSheet(context: context, builder: _buildRunCompleteSheet);
+    Future.delayed(Duration(seconds: 5)).then((value) {
+      controller.close;
+    });
+  }
+  Widget _buildRunCompleteSheet(BuildContext context){
+    final totalRuntime = laps.fold(milliseconds, (previousValue, element) => previousValue+element);
+    final textTheme = Theme.of(context).textTheme;
+    return SafeArea(
+      child: Container(
+        color: Theme.of(context).cardColor,
+        width: double.infinity,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 30),
+          child: Column(
+            children: [
+              Text("Run finished!",style: Theme.of(context).textTheme.headlineLarge,),
+              Text("Total Run time is : ${secondSecond(totalRuntime)}"),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void _onTick(Timer timer){
@@ -172,13 +191,17 @@ class _StopWatchState extends State<StopWatch> {
               ),
             ),
             const SizedBox(width: 20,),
-            TextButton(
-              onPressed: (stopTimer),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.redAccent),
-                foregroundColor: MaterialStateProperty.all(Colors.red),
-              ),
-              child: const Text("Stop",style: TextStyle(color: Colors.white),),
+            Builder(
+              builder: (context) {
+                return TextButton(
+                  onPressed: () => stopTimer(context),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.redAccent),
+                    foregroundColor: MaterialStateProperty.all(Colors.red),
+                  ),
+                  child: const Text("Stop",style: TextStyle(color: Colors.white),),
+                );
+              }
             ),
           ],
         );
